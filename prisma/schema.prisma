@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum StatusExame {
+  AGENDADO
+  REALIZADO
+  CANCELADO
+}
+
+enum StatusConsulta {
+  AGENDADA
+  REALIZADA
+  CANCELADA
+}
+
+model Usuario {
+  id          Int      @id @default(autoincrement())
+  nome        String
+  email       String   @unique
+  senhaHash   String
+  aceitouLgpd Boolean
+
+  tema         String @default("claro")
+  corTema      String @default("#2563EB")
+  tamanhoFonte Int    @default(16)
+  telefone     String?
+  fotoPerfil   String?
+
+  resetToken       String?
+  resetTokenExpira DateTime?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  idosos            Idoso[]
+  notificacoes      Notificacao[]
+  pushSubscriptions PushSubscription[]
+}
+
+model Idoso {
+  id             Int      @id @default(autoincrement())
+  nome           String
+  cpf            String   @unique
+  dataNascimento DateTime
+  sexo           String
+  telefone       String?
+  observacoes    String?
+
+  usuarioId Int
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+
+  exames    Exame[]
+  consultas Consulta[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Exame {
+  id            Int      @id @default(autoincrement())
+  tipo          String
+  especialidade String
+  local         String
+  data          DateTime
+  horario       String?
+  observacoes   String?
+
+  status StatusExame @default(AGENDADO)
+
+  idosoId Int
+  idoso   Idoso @relation(fields: [idosoId], references: [id])
+
+  resultado ResultadoExame?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ResultadoExame {
+  id            Int     @id @default(autoincrement())
+  nomeResultado String
+  arquivoUrl    String?
+  resumo        String?
+
+  exameId Int   @unique
+  exame   Exame @relation(fields: [exameId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Consulta {
+  id            Int      @id @default(autoincrement())
+  medico        String
+  especialidade String
+  local         String
+  data          DateTime
+
+  status StatusConsulta @default(AGENDADA)
+
+  idosoId Int
+  idoso   Idoso @relation(fields: [idosoId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Notificacao {
+  id       Int     @id @default(autoincrement())
+  titulo   String
+  mensagem String
+  lida     Boolean @default(false)
+
+  usuarioId Int
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model PushSubscription {
+  id       Int    @id @default(autoincrement())
+  endpoint String
+  p256dh   String
+  auth     String
+
+  usuarioId Int
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+
+  createdAt DateTime @default(now())
+}
