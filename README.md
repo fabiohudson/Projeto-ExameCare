@@ -1,77 +1,51 @@
 # ExameCare
 
-**Aplicação para familiares e cuidadores acompanharem idosos**, com gestão completa de exames, consultas, resultados e alertas.
-
-Uma solução prática e intuitiva para quem cuida de idosos, centralizando todas as informações de saúde em um único lugar.
+Aplicação para familiares cuidadores acompanharem idosos, exames, consultas, resultados e alertas.
 
 ## Tecnologias
 
-### Backend
-- **NestJS**
-- **Prisma ORM**
-- **PostgreSQL**
-
-### Autenticação
-- **JWT** (JSON Web Tokens)
-
-### Frontend
-- **PWA** (Progressive Web App) estático
-- **HTML, CSS e JavaScript** (Vanilla)
-
----
+- **Backend**: NestJS, Prisma e PostgreSQL
+- **Autenticação**: JWT
+- **Frontend**: PWA estático em HTML, CSS e JavaScript
 
 ## Preparação
 
-### 1. Instale as dependências
+1. Instale as dependências:
 
 ```bash
 npm install
 
-2. Configure o ambiente
-Crie um arquivo .env na raiz do projeto com base no .env.example:
+Crie um arquivo .env na raiz usando .env.example como base:
 
-```bash
-envDATABASE_URL="postgresql://postgres:SENHA@localhost:5432/examecare"
+BashDATABASE_URL="postgresql://postgres:SENHA@localhost:5432/examecare"
 JWT_SECRET="troque-este-segredo"
 
-3. Gere o Prisma Client
+Gere o Prisma Client:
+
 Bashnpx prisma generate
-4. Aplique as migrações no banco de dados
+
+Aplique as migrações no banco:
+
 Bashnpx prisma migrate deploy
-
-Como Executar
-API (Backend) - Modo Desenvolvimento
+Executar
+API em desenvolvimento:
 Bashnpm run start:dev
-Frontend
+Frontend:
 Bashnpx serve frontend
-Dica: Se preferir abrir diretamente o frontend/index.html no navegador, a API padrão configurada é http://localhost:3000. Para alterar o endereço da API, edite o arquivo frontend/config.js.
-
+Se abrir frontend/index.html direto no navegador, a API padrão será http://localhost:3000. Para outro endereço, edite frontend/config.js.
 Funcionalidades
 
 Cadastro e login com aceite de LGPD
-Recuperação de senha (com token salvo no banco)
+Recuperação de senha com token salvo no banco
 Cadastro de idosos
-Gestão completa de exames: agendamento, realização, cancelamento e remoção
-Registro de resultados de exames realizados
-Gestão completa de consultas: agendamento, realização, cancelamento e remoção
-Dashboard com:
-Eventos do dia
-Próximos 7 dias
-Resultados pendentes
+Agendamento, realização, cancelamento e remoção de exames
+Registro de resultado para exames realizados
+Agendamento, realização, cancelamento e remoção de consultas
+Dashboard com eventos do dia, próximos 7 dias e resultados pendentes
+Perfil com dados pessoais e preferências visuais
 
-Perfil do usuário com dados pessoais e preferências visuais
-
-
-Observação sobre Recuperação de Senha
-Em produção, conecte o método forgotPassword a um serviço de envio de e-mails (ex: SendGrid, AWS SES, Nodemailer, etc.).
-Em desenvolvimento, a API retorna o token de recuperação diretamente no corpo da resposta para facilitar testes manuais.
-
-Validação e Build
-Bash# Build do projeto
-npm run build
-
-# Executar testes
+Observação sobre recuperação de senha
+Em produção, conecte o método forgotPassword a um provedor de e-mail. Em desenvolvimento, a API retorna o token no corpo da resposta para facilitar testes manuais.
+Validação
+Bashnpm run build
 npm test
-
-Versão mobile nativa (PWA já está otimizada)
-Dashboard para profissionais de saúde
