@@ -18,8 +18,10 @@ npm install
 
 2. Crie um arquivo .env na raiz usando .env.example como base:
 
+```
 BashDATABASE_URL="postgresql://postgres:SENHA@localhost:5432/examecare"
 JWT_SECRET="troque-este-segredo"
+```
 
 Gere o Prisma Client:
 
