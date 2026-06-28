@@ -35,7 +35,7 @@ npx prisma generate
 npx prisma migrate deploy
 ```
 
-Executar
+## Executar
 API em desenvolvimento:
 
 ```bash
@@ -50,7 +50,7 @@ Bashnpx serve frontend
 
 Se abrir frontend/index.html direto no navegador, a API padrão será http://localhost:3000. Para outro endereço, edite frontend/config.js.
 
-Funcionalidades
+## Funcionalidades
 
 Cadastro e login com aceite de LGPD
 Recuperação de senha com token salvo no banco
@@ -61,7 +61,7 @@ Agendamento, realização, cancelamento e remoção de consultas
 Dashboard com eventos do dia, próximos 7 dias e resultados pendentes
 Perfil com dados pessoais e preferências visuais
 
-Observação sobre recuperação de senha
+## Observação sobre recuperação de senha
 Em produção, conecte o método forgotPassword a um provedor de e-mail. Em desenvolvimento, a API retorna o token no corpo da resposta para facilitar testes manuais.
 Validação
 
