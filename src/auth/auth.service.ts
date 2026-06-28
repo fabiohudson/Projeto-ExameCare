@@ -22,50 +22,39 @@ export class AuthService {
 
   async register(dto: RegisterDto) {
     const usuarioExistente =
-      await this.usuarioService.buscarPorEmail(
-        dto.email,
-      );
+      await this.usuarioService.buscarPorEmail(dto.email);
 
     if (usuarioExistente) {
-      throw new BadRequestException(
-        'E-mail já cadastrado',
-      );
+      throw new BadRequestException('E-mail ja cadastrado');
     }
 
     if (!dto.aceitouLgpd) {
       throw new BadRequestException(
-        'É obrigatório aceitar a LGPD',
+        'E obrigatorio aceitar a LGPD',
       );
     }
 
-    const senhaHash = await bcrypt.hash(
-      dto.senha,
-      10,
-    );
+    const senhaHash = await bcrypt.hash(dto.senha, 10);
 
-    const usuario =
-      await this.usuarioService.criar({
-        nome: dto.nome,
-        email: dto.email,
-        senhaHash,
-        aceitouLgpd: dto.aceitouLgpd,
-      });
+    const usuario = await this.usuarioService.criar({
+      nome: dto.nome,
+      email: dto.email,
+      senhaHash,
+      aceitouLgpd: dto.aceitouLgpd,
+    });
 
-    const { senhaHash: _, ...usuarioSemSenha } =
-      usuario;
+    const { senhaHash: _, ...usuarioSemSenha } = usuario;
 
     return usuarioSemSenha;
   }
 
   async login(dto: LoginDto) {
     const usuario =
-      await this.usuarioService.buscarPorEmail(
-        dto.email,
-      );
+      await this.usuarioService.buscarPorEmail(dto.email);
 
     if (!usuario) {
       throw new UnauthorizedException(
-        'Credenciais inválidas',
+        'Credenciais invalidas',
       );
     }
 
@@ -76,7 +65,7 @@ export class AuthService {
 
     if (!senhaValida) {
       throw new UnauthorizedException(
-        'Credenciais inválidas',
+        'Credenciais invalidas',
       );
     }
 
@@ -91,67 +80,55 @@ export class AuthService {
   }
 
   async forgotPassword(dto: ForgotPasswordDto) {
-  const usuario =
-    await this.usuarioService.buscarPorEmail(dto.email);
+    const usuario =
+      await this.usuarioService.buscarPorEmail(dto.email);
 
-  if (!usuario) {
+    if (usuario) {
+      const token = randomBytes(32).toString('hex');
+      const expira = new Date();
+      expira.setMinutes(expira.getMinutes() + 30);
+
+      await this.usuarioService.salvarTokenRecuperacao(
+        usuario.email,
+        token,
+        expira,
+      );
+    }
+
     return {
       message:
-        'Se o e-mail estiver cadastrado, um token de recuperação será gerado.',
+        'Se o e-mail estiver cadastrado, as instruções de recuperação serão enviadas.',
     };
   }
 
-  const token = randomBytes(32).toString('hex');
+  async resetPassword(dto: ResetPasswordDto) {
+    const usuario =
+      await this.usuarioService.buscarPorResetToken(dto.token);
 
-  const expira = new Date();
-  expira.setMinutes(expira.getMinutes() + 30);
+    if (!usuario) {
+      throw new BadRequestException(
+        'Codigo de recuperacao invalido',
+      );
+    }
 
-  await this.usuarioService.salvarTokenRecuperacao(
-    usuario.email,
-    token,
-    expira,
-  );
+    if (
+      !usuario.resetTokenExpira ||
+      usuario.resetTokenExpira < new Date()
+    ) {
+      throw new BadRequestException(
+        'Codigo de recuperacao expirado',
+      );
+    }
 
-  return {
-    message: 'Token de recuperação gerado com sucesso.',
-    token,
-    expira,
-  };
-}
+    const senhaHash = await bcrypt.hash(dto.novaSenha, 10);
 
-async resetPassword(dto: ResetPasswordDto) {
-  const usuario =
-    await this.usuarioService.buscarPorResetToken(
-      dto.token,
+    await this.usuarioService.atualizarSenha(
+      usuario.id,
+      senhaHash,
     );
 
-  if (!usuario) {
-    throw new BadRequestException(
-      'Token inválido',
-    );
+    return {
+      message: 'Senha redefinida com sucesso.',
+    };
   }
-
-  if (
-    !usuario.resetTokenExpira ||
-    usuario.resetTokenExpira < new Date()
-  ) {
-    throw new BadRequestException(
-      'Token expirado',
-    );
-  }
-
-  const senhaHash = await bcrypt.hash(
-    dto.novaSenha,
-    10,
-  );
-
-  await this.usuarioService.atualizarSenha(
-    usuario.id,
-    senhaHash,
-  );
-
-  return {
-    message: 'Senha redefinida com sucesso.',
-  };
-}
 }
