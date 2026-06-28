@@ -45,7 +45,7 @@ npm run start:dev
 Frontend:
 
 ```bash
-Bashnpx serve frontend
+npx serve frontend
 ```
 
 Se abrir frontend/index.html direto no navegador, a API padrão será http://localhost:3000. Para outro endereço, edite frontend/config.js.
