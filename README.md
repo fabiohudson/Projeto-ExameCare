@@ -18,24 +18,36 @@ npm install
 
 2. Crie um arquivo .env na raiz usando .env.example como base:
 
-```
+```bash
 BashDATABASE_URL="postgresql://postgres:SENHA@localhost:5432/examecare"
 JWT_SECRET="troque-este-segredo"
 ```
 
 Gere o Prisma Client:
 
-Bashnpx prisma generate
+```bash
+npx prisma generate
+```
 
 Aplique as migrações no banco:
 
-Bashnpx prisma migrate deploy
-Executar
+```bash
+npx prisma migrate deploy
+```
+
 API em desenvolvimento:
+
+```bash
 Bashnpm run start:dev
+```
 Frontend:
+
+```bash
 Bashnpx serve frontend
+```
+
 Se abrir frontend/index.html direto no navegador, a API padrão será http://localhost:3000. Para outro endereço, edite frontend/config.js.
+
 Funcionalidades
 
 Cadastro e login com aceite de LGPD
@@ -50,5 +62,10 @@ Perfil com dados pessoais e preferências visuais
 Observação sobre recuperação de senha
 Em produção, conecte o método forgotPassword a um provedor de e-mail. Em desenvolvimento, a API retorna o token no corpo da resposta para facilitar testes manuais.
 Validação
+
+```bash
+npm run build
+npm test
+```
 Bashnpm run build
 npm test
