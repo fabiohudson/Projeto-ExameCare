@@ -26,10 +26,14 @@ Uma solução prática e intuitiva para quem cuida de idosos, centralizando toda
 
 ```bash
 npm install
+
 2. Configure o ambiente
 Crie um arquivo .env na raiz do projeto com base no .env.example:
+
+```bash
 envDATABASE_URL="postgresql://postgres:SENHA@localhost:5432/examecare"
 JWT_SECRET="troque-este-segredo"
+
 3. Gere o Prisma Client
 Bashnpx prisma generate
 4. Aplique as migrações no banco de dados
@@ -69,10 +73,5 @@ npm run build
 # Executar testes
 npm test
 
-Próximos Passos (Sugestões)
-
-Implementação de notificações push
-Relatórios em PDF
-Integração com calendário (Google Calendar / iCal)
 Versão mobile nativa (PWA já está otimizada)
 Dashboard para profissionais de saúde
