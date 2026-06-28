@@ -19,7 +19,7 @@ npm install
 2. Crie um arquivo .env na raiz usando .env.example como base:
 
 ```bash
-BashDATABASE_URL="postgresql://postgres:SENHA@localhost:5432/examecare"
+DATABASE_URL="postgresql://postgres:SENHA@localhost:5432/examecare"
 JWT_SECRET="troque-este-segredo"
 ```
 
