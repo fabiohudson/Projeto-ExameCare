@@ -23,23 +23,25 @@ BashDATABASE_URL="postgresql://postgres:SENHA@localhost:5432/examecare"
 JWT_SECRET="troque-este-segredo"
 ```
 
-Gere o Prisma Client:
+3. Gere o Prisma Client:
 
 ```bash
 npx prisma generate
 ```
 
-Aplique as migrações no banco:
+4. Aplique as migrações no banco:
 
 ```bash
 npx prisma migrate deploy
 ```
 
+Executar
 API em desenvolvimento:
 
 ```bash
-Bashnpm run start:dev
+npm run start:dev
 ```
+
 Frontend:
 
 ```bash
