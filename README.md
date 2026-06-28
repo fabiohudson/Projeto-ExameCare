@@ -15,7 +15,7 @@ Aplicação para familiares cuidadores acompanharem idosos, exames, consultas, r
 ```bash
 npm install
 
-Crie um arquivo .env na raiz usando .env.example como base:
+2. Crie um arquivo .env na raiz usando .env.example como base:
 
 BashDATABASE_URL="postgresql://postgres:SENHA@localhost:5432/examecare"
 JWT_SECRET="troque-este-segredo"
