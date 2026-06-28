@@ -37,12 +37,13 @@ export class ConsultaService {
 
     const dataConsulta = new Date(dto.data);
 
-    const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
+    const amanha = new Date();
+    amanha.setDate(amanha.getDate() + 1);
+    amanha.setHours(0, 0, 0, 0);
 
-    if (dataConsulta < hoje) {
+    if (dataConsulta < amanha) {
       throw new BadRequestException(
-        'Não é permitido agendar consultas em datas passadas',
+        'A consulta deve ser marcada pelo menos 1 dia depois da data atual',
       );
     }
 
@@ -103,6 +104,19 @@ export class ConsultaService {
       throw new BadRequestException(
         'Consultas realizadas não podem ser editadas',
       );
+    }
+
+    if (dto.data) {
+      const novaDataConsulta = new Date(dto.data);
+      const amanha = new Date();
+      amanha.setDate(amanha.getDate() + 1);
+      amanha.setHours(0, 0, 0, 0);
+
+      if (novaDataConsulta < amanha) {
+        throw new BadRequestException(
+          'A consulta deve ser marcada pelo menos 1 dia depois da data atual',
+        );
+      }
     }
 
     return this.prisma.consulta.update({

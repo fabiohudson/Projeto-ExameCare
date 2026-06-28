@@ -1,4 +1,4 @@
-import { IsInt, IsOptional, IsString, Min, Max } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class UpdatePerfilDto {
   @IsOptional()
@@ -11,19 +11,13 @@ export class UpdatePerfilDto {
 
   @IsOptional()
   @IsString()
-  fotoPerfil?: string;
+  endereco?: string;
 
   @IsOptional()
   @IsString()
-  tema?: string;
+  alergias?: string;
 
   @IsOptional()
   @IsString()
-  corTema?: string;
-
-  @IsOptional()
-  @IsInt()
-  @Min(12)
-  @Max(24)
-  tamanhoFonte?: number;
+  observacoesImportantes?: string;
 }

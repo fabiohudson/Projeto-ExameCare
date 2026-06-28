@@ -31,6 +31,9 @@ model Usuario {
   tamanhoFonte Int    @default(16)
   telefone     String?
   fotoPerfil   String?
+  endereco      String?
+  alergias      String?
+  observacoesImportantes String?
 
   resetToken       String?
   resetTokenExpira DateTime?
