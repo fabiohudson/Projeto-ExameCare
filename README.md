@@ -14,6 +14,7 @@ Aplicação para familiares cuidadores acompanharem idosos, exames, consultas, r
 
 ```bash
 npm install
+```
 
 2. Crie um arquivo .env na raiz usando .env.example como base:
 
