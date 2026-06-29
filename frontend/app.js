@@ -128,6 +128,28 @@ function validatePattern(value, pattern) {
   return pattern.test((value || '').trim());
 }
 
+function formatarCPF(valor) {
+  return valor
+    .replace(/\D/g, '')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+    .slice(0, 14);
+}
+
+function formatarTelefone(valor) {
+  const numeros = valor.replace(/\D/g, '').slice(0, 11);
+
+  if (numeros.length <= 10) {
+    return numeros
+      .replace(/(\d{2})(\d)/, '($1) $2')
+      .replace(/(\d{4})(\d)/, '$1-$2');
+  }
+
+  return numeros
+    .replace(/(\d{2})(\d)/, '($1) $2')
+    .replace(/(\d{5})(\d)/, '$1-$2');
+}
 function validatePessoa(values) {
   if (!validatePattern(values.nome, /^[A-Za-zÀ-ÿ\s'.-]{3,}$/)) {
     throw new Error('Informe um nome real, usando apenas letras.');
@@ -843,13 +865,71 @@ function renderModalBody(type, item) {
   if (type === 'idoso') {
     return `
       <form class="form-grid two" id="idosoForm">
-        <div class="field"><label>Nome</label><input name="nome" value="${item?.nome || ''}" pattern="[A-Za-zÀ-ÿ\\s'.-]{3,}" autocomplete="name" required /></div>
-        <div class="field"><label>CPF</label><input name="cpf" value="${item?.cpf || ''}" inputmode="numeric" placeholder="000.000.000-00" pattern="\\d{11}|\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}" required /></div>
-        <div class="field"><label>Data de nascimento</label><input name="dataNascimento" type="date" value="${toInputDate(item?.dataNascimento)}" max="${todayInputDate()}" required /></div>
-        <div class="field"><label>Sexo</label><select name="sexo" required><option value="">Selecione</option><option value="Feminino" ${item?.sexo === 'Feminino' ? 'selected' : ''}>Feminino</option><option value="Masculino" ${item?.sexo === 'Masculino' ? 'selected' : ''}>Masculino</option><option value="Outro" ${item?.sexo === 'Outro' ? 'selected' : ''}>Outro</option></select></div>
-        <div class="field"><label>Telefone</label><input name="telefone" value="${item?.telefone || ''}" inputmode="tel" placeholder="(61) 99999-9999" pattern="\\(?\\d{2}\\)?\\s?\\d{4,5}-?\\d{4}" /></div>
-        <div class="field"><label>Observações</label><textarea name="observacoes">${item?.observacoes || ''}</textarea></div>
-        <div class="btn-row"><button class="btn" type="submit">${icon('save')} Salvar</button></div>
+        <div class="field">
+          <label>Nome</label>
+          <input
+            name="nome"
+            value="${item?.nome || ''}"
+            pattern="[A-Za-zÀ-ÿ\\s'.-]{3,}"
+            autocomplete="name"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label>CPF</label>
+          <input
+            name="cpf"
+            value="${formatarCPF(item?.cpf || '')}"
+            inputmode="numeric"
+            maxlength="14"
+            placeholder="000.000.000-00"
+            required
+            data-cpf
+          />
+        </div>
+
+        <div class="field">
+          <label>Data de nascimento</label>
+          <input
+            name="dataNascimento"
+            type="date"
+            value="${toInputDate(item?.dataNascimento)}"
+            max="${todayInputDate()}"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label>Sexo</label>
+          <select name="sexo" required>
+            <option value="">Selecione</option>
+            <option value="Feminino" ${item?.sexo === 'Feminino' ? 'selected' : ''}>Feminino</option>
+            <option value="Masculino" ${item?.sexo === 'Masculino' ? 'selected' : ''}>Masculino</option>
+            <option value="Outro" ${item?.sexo === 'Outro' ? 'selected' : ''}>Outro</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Telefone</label>
+          <input
+            name="telefone"
+            value="${formatarTelefone(item?.telefone || '')}"
+            inputmode="tel"
+            maxlength="15"
+            placeholder="(61) 99999-9999"
+            data-telefone
+          />
+        </div>
+
+        <div class="field">
+          <label>Observações</label>
+          <textarea name="observacoes">${item?.observacoes || ''}</textarea>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn" type="submit">${icon('save')} Salvar</button>
+        </div>
       </form>
     `;
   }
@@ -858,12 +938,41 @@ function renderModalBody(type, item) {
     return `
       <form class="form-grid two" id="exameForm">
         ${selectIdoso(item?.idosoId)}
-        <div class="field"><label>Tipo</label><input name="tipo" value="${item?.tipo || ''}" required /></div>
-        <div class="field"><label>Especialidade</label><input name="especialidade" value="${item?.especialidade || ''}" required /></div>
-        <div class="field"><label>Local</label><input name="local" value="${item?.local || ''}" required /></div>
-        <div class="field"><label>Data</label><input name="data" type="date" value="${toInputDate(item?.data)}" min="${todayInputDate()}" required /></div>
-        <div class="field"><label>Observações</label><textarea name="observacoes">${item?.observacoes || ''}</textarea></div>
-        <div class="btn-row"><button class="btn" type="submit">${icon('save')} Salvar</button></div>
+
+        <div class="field">
+          <label>Tipo</label>
+          <input name="tipo" value="${item?.tipo || ''}" required />
+        </div>
+
+        <div class="field">
+          <label>Especialidade</label>
+          <input name="especialidade" value="${item?.especialidade || ''}" required />
+        </div>
+
+        <div class="field">
+          <label>Local</label>
+          <input name="local" value="${item?.local || ''}" required />
+        </div>
+
+        <div class="field">
+          <label>Data</label>
+          <input
+            name="data"
+            type="date"
+            value="${toInputDate(item?.data)}"
+            min="${todayInputDate()}"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label>Observações</label>
+          <textarea name="observacoes">${item?.observacoes || ''}</textarea>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn" type="submit">${icon('save')} Salvar</button>
+        </div>
       </form>
     `;
   }
@@ -872,21 +981,72 @@ function renderModalBody(type, item) {
     return `
       <form class="form-grid two" id="consultaForm">
         ${selectIdoso(item?.idosoId)}
-        <div class="field"><label>Médico</label><input name="medico" value="${item?.medico || ''}" pattern="[A-Za-zÀ-ÿ\\s'.-]{3,}" required /></div>
-        <div class="field"><label>Especialidade</label><input name="especialidade" value="${item?.especialidade || ''}" required /></div>
-        <div class="field"><label>Local</label><input name="local" value="${item?.local || ''}" required /></div>
-        <div class="field"><label>Data</label><input name="data" type="date" value="${toInputDate(item?.data)}" min="${tomorrowInputDate()}" required /></div>
-        <div class="btn-row"><button class="btn" type="submit">${icon('save')} Salvar</button></div>
+
+        <div class="field">
+          <label>Médico</label>
+          <input
+            name="medico"
+            value="${item?.medico || ''}"
+            pattern="[A-Za-zÀ-ÿ\\s'.-]{3,}"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label>Especialidade</label>
+          <input name="especialidade" value="${item?.especialidade || ''}" required />
+        </div>
+
+        <div class="field">
+          <label>Local</label>
+          <input name="local" value="${item?.local || ''}" required />
+        </div>
+
+        <div class="field">
+          <label>Data</label>
+          <input
+            name="data"
+            type="date"
+            value="${toInputDate(item?.data)}"
+            min="${tomorrowInputDate()}"
+            required
+          />
+        </div>
+
+        <div class="btn-row">
+          <button class="btn" type="submit">${icon('save')} Salvar</button>
+        </div>
       </form>
     `;
   }
 
   return `
     <form class="form-grid" id="resultadoForm">
-      <div class="field"><label>Nome do resultado</label><input name="nomeResultado" value="${item?.resultado?.nomeResultado || ''}" required /></div>
-      <div class="field"><label>URL do arquivo</label><input name="arquivoUrl" value="${item?.resultado?.arquivoUrl || ''}" /></div>
-      <div class="field"><label>Resumo</label><textarea name="resumo">${item?.resultado?.resumo || ''}</textarea></div>
-      <div class="btn-row"><button class="btn" type="submit">${icon('save')} Registrar</button></div>
+      <div class="field">
+        <label>Nome do resultado</label>
+        <input
+          name="nomeResultado"
+          value="${item?.resultado?.nomeResultado || ''}"
+          required
+        />
+      </div>
+
+      <div class="field">
+        <label>URL do arquivo</label>
+        <input
+          name="arquivoUrl"
+          value="${item?.resultado?.arquivoUrl || ''}"
+        />
+      </div>
+
+      <div class="field">
+        <label>Resumo</label>
+        <textarea name="resumo">${item?.resultado?.resumo || ''}</textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn" type="submit">${icon('save')} Registrar</button>
+      </div>
     </form>
   `;
 }
@@ -965,6 +1125,17 @@ function bindEvents() {
     .querySelector('#resultadoForm')
     ?.addEventListener('submit', (event) => submitResultado(event, resultado));
   document.querySelector('#perfilForm')?.addEventListener('submit', submitPerfil);
+  document.querySelectorAll('[data-cpf]').forEach((input) => {
+  input.addEventListener('input', (event) => {
+    event.target.value = formatarCPF(event.target.value);
+  });
+});
+
+document.querySelectorAll('[data-telefone]').forEach((input) => {
+  input.addEventListener('input', (event) => {
+    event.target.value = formatarTelefone(event.target.value);
+  });
+});
 }
 
 function render() {
